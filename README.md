@@ -4,7 +4,7 @@ Built using: Node.js, Express, MongoDB.
 
 # About Keep Short
 
-• URL Shortening App
+• URL Shortener App
 
 # Visit Keep Short
 
