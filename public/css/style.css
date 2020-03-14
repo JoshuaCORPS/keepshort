@@ -1,0 +1,46 @@
+.nav-col {
+  background-color: rgba(0, 0, 0, 0.03);
+}
+
+.margin-t {
+  margin-top: 35%;
+}
+
+.m-w {
+  max-width: 800px;
+}
+
+.footer {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+}
+
+.btn-link,
+.btn-link:hover {
+  font-weight: 400;
+  color: #6c757d;
+  background-color: transparent;
+  padding: 0;
+  text-decoration: none;
+}
+
+a,
+a:hover {
+  color: #6c757d;
+  text-decoration: none;
+}
+
+input[type='text']:focus {
+  border-color: #6c757d;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+}
+
+@media only screen and (max-width: 768px) {
+  /* For mobile phones: */
+  .margin-t {
+    margin-top: 50%;
+  }
+}

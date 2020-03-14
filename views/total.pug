@@ -1,0 +1,16 @@
+extends base
+
+block content
+  .container.m-w
+    .border.margin-t.p-4
+      .display-4.text-center.pb-4 Total URL Clicks
+      .row
+        .col
+          .form-inline.d-flex.justify-content-center
+            .input-group.mr-2
+              .input-group-prepend
+                span.input-group-text: i.fas.fa-link
+              label.sr-only(for='url') Your Url
+              input.form-control.text-center.form-control-lg#url(type='text' value=`${url.clicks}` required readonly)
+          a.btn.btn-lg.btn-secondary.d-flex.justify-content-center.mt-4(href='/') Shortened another URL
+

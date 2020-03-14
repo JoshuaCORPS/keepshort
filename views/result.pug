@@ -1,0 +1,24 @@
+extends base
+
+block content
+  .container.m-w
+    .border.margin-t.p-4
+      .display-4.text-center.pb-4 Your Shortened URL.
+      .row
+        .col
+          .input-group
+            .input-group-prepend
+              span.input-group-text: i.fas.fa-link
+            label.sr-only(for='url') Your Url
+            input.form-control.text-center.form-control-lg#url(type='text' value=`${webUrl}` required readonly)
+            .input-group-append
+              button.btn.btn-secondary#copy(type='submit' data-toggle='tooltip' data-placement='top' title='Copy to clipboard') Copy URL
+      p.pt-3 Original URL: 
+        span: a(href=`${url.full}` target='_blank')= `${url.full}`
+      p.pt-1 Check the 
+        span: a(href=`/result/${url.short}/total` target='_blank') total clicks 
+        span of the URL.
+      form#form-delete-url(data-shorturl=`${url.short}`)
+        button.btn.btn-link(type='submit') Delete this url
+      a.btn.btn-lg.btn-secondary.d-flex.justify-content-center.mt-4(href='/') Shortened another URL
+      
