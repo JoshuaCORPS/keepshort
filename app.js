@@ -5,6 +5,8 @@ const xss = require('xss-clean');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 
+const AppError = require('./utils/AppError');
+const errorHandler = require('./controllers/errorController');
 const urlRouter = require('./routes/urlRouter');
 const app = express();
 
@@ -31,12 +33,11 @@ app.use(xss());
 // Routes
 app.use('/', urlRouter);
 
-app.all('*', (req, res) => {
-  res.status(404).render('notfound', {
-    title: '404',
-    msg: 'Page Not Found'
-  });
+app.all('*', (req, res, next) => {
+  return next(new AppError('Page not found!', 404));
 });
+
+app.use(errorHandler);
 
 app.disable('x-powered-by');
 
