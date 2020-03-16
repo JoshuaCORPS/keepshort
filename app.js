@@ -34,7 +34,7 @@ app.use(xss());
 app.use('/', urlRouter);
 
 app.all('*', (req, res, next) => {
-  return next(new AppError('Page not found!', 404));
+  return next(new AppError('PAGE NOT FOUND', 404));
 });
 
 app.use(errorHandler);
