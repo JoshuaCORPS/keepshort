@@ -1,16 +1,20 @@
 const Url = require('./../models/urlModel');
+const AppError = require('./../utils/AppError');
+const catchAsync = require('./../utils/catchAsync');
 
-const searchRenderUrl = async (req, res) => {
+const searchRenderUrl = async (title, page, req, res, next) => {
   const url = await Url.findOne({ short: req.params.id });
 
   if (!url) {
-    return res.status(404).render('notfound', {
-      title: '404',
-      msg: 'URL NOT FOUND'
-    });
+    return next(new AppError('URL NOT FOUND', 404));
   }
 
-  return url;
+  const webUrl = `${req.protocol}://${req.get('host')}/${url.short}`;
+  return res.status(200).render(`${page}`, {
+    title: `${title}`,
+    url,
+    webUrl
+  });
 };
 
 exports.getHome = (req, res) => {
@@ -19,81 +23,50 @@ exports.getHome = (req, res) => {
   });
 };
 
-exports.getUrl = async (req, res) => {
-  try {
-    const url = await searchRenderUrl(req, res);
+exports.getUrl = catchAsync(async (req, res, next) => {
+  const url = await Url.findOne({ short: req.params.id });
 
-    url.clicks++;
-    await url.save();
-
-    res.redirect(url.full);
-  } catch (err) {
-    console.log(err.message);
+  if (!url) {
+    return next(new AppError('URL NOT FOUND', 404));
   }
-};
 
-exports.getResult = async (req, res) => {
-  try {
-    const url = await searchRenderUrl(req, res);
+  url.clicks++;
+  await url.save();
 
-    const webUrl = `${req.protocol}://${req.get('host')}/${url.short}`;
-    return res.status(200).render('result', {
-      title: 'Result',
-      url,
-      webUrl
-    });
-  } catch (err) {
-    console.log(err.message);
-  }
-};
+  res.redirect(url.full);
+});
 
-exports.getTotal = async (req, res) => {
-  try {
-    const url = await searchRenderUrl(req, res);
+exports.getResult = catchAsync(async (req, res, next) => {
+  await searchRenderUrl('Result', 'result', req, res, next);
+});
 
-    return res.status(200).render('total', {
-      title: 'Total Clicks',
-      url
-    });
-  } catch (err) {
-    console.log(err.message);
-  }
-};
+exports.getTotal = catchAsync(async (req, res, next) => {
+  await searchRenderUrl('Total Clicks', 'total', req, res, next);
+});
 
-exports.createUrl = async (req, res) => {
-  try {
-    const createdUrl = await Url.create({
-      full: req.body.full,
-      short: req.body.short
-    });
+exports.createUrl = catchAsync(async (req, res, next) => {
+  const createdUrl = await Url.create({
+    full: req.body.full,
+    short: req.body.short
+  });
 
-    return res.status(201).json({
-      status: 'Success',
-      data: {
-        url: createdUrl
-      }
-    });
-  } catch (err) {
-    console.log(err.message);
-  }
-};
-
-exports.deleteUrl = async (req, res) => {
-  try {
-    const url = await Url.findOneAndDelete({ short: req.params.id });
-
-    if (!url) {
-      return res.status(404).render('notfound', {
-        title: '404',
-        msg: 'URL NOT FOUND'
-      });
+  return res.status(201).json({
+    status: 'Success',
+    data: {
+      url: createdUrl
     }
+  });
+});
 
-    return res.status(204).json({
-      status: 'Success',
-      data: null
-    });
-  } catch (err) {
-    console.log(err.stack);
+exports.deleteUrl = catchAsync(async (req, res, next) => {
+  const url = await Url.findOneAndDelete({ short: req.params.id });
+
+  if (!url) {
+    return next(new AppError('URL NOT FOUND', 404));
   }
-};
+
+  return res.status(204).json({
+    status: 'Success',
+    data: null
+  });
+});
